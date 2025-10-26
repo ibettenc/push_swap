@@ -6,7 +6,7 @@
 /*   By: ibettenc <ibettenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 12:54:43 by ibettenc          #+#    #+#             */
-/*   Updated: 2025/10/25 21:29:32 by ibettenc         ###   ########.fr       */
+/*   Updated: 2025/10/26 14:50:25 by ibettenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,15 @@ int	main(int ac, char **av)
 	a = NULL;
 	b = NULL;
 
+	if (!a || is_sorted(&a))
+	{
+		free_stack(a);
+		return (-1);
+	}
 	if (ac < 2)
 	{
 		write(2, "Error : no arguments\n", 21);
+		free_stack(a);
 		return (-1);
 	}
 	if (ac == 2)
@@ -93,6 +99,7 @@ int	main(int ac, char **av)
 		if (is_digit(av[1]) == -1)
 		{
 			write(2, "Error : is_digit\ndigits only\n", 28);
+			free_stack(a);
 			return (-1);
 		}
 		convert(&a, av[1]);
@@ -100,7 +107,10 @@ int	main(int ac, char **av)
 	if (ac > 2)
 	{
 		if (treating_int(ac, av, &a) == -1)
+		{
+			free_stack(a);
 			return (-1);
+		}
 	}
 	show_stack(a); //
 	if (is_sorted(&a))
@@ -110,6 +120,7 @@ int	main(int ac, char **av)
 	show_stack(a); //
 	free_stack(a);
 	free_stack(b);
+	ft_printf("is sorted\n");
 	return (0);
 }
 

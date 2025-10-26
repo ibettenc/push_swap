@@ -6,7 +6,7 @@
 /*   By: ibettenc <ibettenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 12:54:43 by ibettenc          #+#    #+#             */
-/*   Updated: 2025/10/25 19:44:14 by ibettenc         ###   ########.fr       */
+/*   Updated: 2025/10/26 14:58:28 by ibettenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,21 @@ int	is_digit(char *av)
 	if (!av || !*av)
 		return (-1);
 
-	if (av[i] == '-' || av[i] == '+')
-		i++;
-	if (!(av[i] >= '0' && av[i] <= '9'))
-		return (-1);
 	while (av[i])
 	{
-		if (!(av[i] >= '0' && av[i] <= '9'))
+		if (av[i] == ' ')
+			i++;
+		if ((av[i] == '-' || av[i] == '+') && ft_isdigit(av[i + 1]))
+			i++;
+		if (!ft_isdigit(av[i]))
 			return (-1);
-		i++;
+		while (ft_isdigit(av[i]))
+			i++;
+		while (av[i] == ' ')
+			i++;
+		if (av[i] && av[i] != '+' && av[i] != '-' && !ft_isdigit(av[i])
+			&& av[i] != ' ')
+			return (-1);
 	}
 	return (0);
 }
@@ -47,6 +53,16 @@ int	is_sorted(t_stack **x)
 		pif = pif->next;
 	}
 	return (1);
+}
+
+int	check_int_range(char *str)
+{
+	long	val;
+
+	val = ft_atol(str); // ft_atol retourne long pour éviter overflow
+	if (val > INT_MAX || val < INT_MIN)
+		return (-1);
+	return (0);
 }
 
 int	is_double(t_stack *head, int value)
@@ -76,6 +92,8 @@ int	treating_int(int ac, char **av, t_stack **a)
 		if (is_digit(av[i]) == -1)
 		{
 			write (2, "Error : is_digit\ndigit only\n", 28);
+			free_stack(*a);
+			*a = NULL;
 			return (-1);
 		}
 		value = ft_atoi(av[i]);
@@ -83,6 +101,7 @@ int	treating_int(int ac, char **av, t_stack **a)
 		{
 			write(2, "Error : is_double\ndouble numbers\n", 33);
 			free_stack(*a);
+			*a = NULL;
 			return (-1);
 		}
 		push_back(a, value);
